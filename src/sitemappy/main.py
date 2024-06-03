@@ -23,6 +23,5 @@ def parse_url(url_string: str) -> str:
 @app.command()
 def main(base_url: Annotated[str, typer.Argument(parser=parse_url)]) -> None:
     response = Crawler(url=base_url).run()
-    response.raise_for_status()
     print(response)
     print(str(base_url))

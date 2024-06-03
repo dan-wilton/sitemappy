@@ -1,6 +1,10 @@
 import asyncio
+from urllib.parse import urljoin, urlparse
 
 import httpx
+from bs4 import BeautifulSoup
+
+HTTP_TRANSPORTS = ["http://", "https://"]
 
 
 class Crawler:
@@ -9,11 +13,28 @@ class Crawler:
         url: str,
         client: httpx.AsyncClient | None = None,
     ):
-        self.url = url
+        self.base_url = url
+        self.parsed_base_url = urlparse(url)
         self.client = client if client else httpx.AsyncClient()
 
-    async def __get_url(self, url: str) -> httpx.Response:
-        return await self.client.get(url=url)
+    async def __get_links(self, url: str) -> list[str]:
+        links = []
+        page = await self.client.get(url=url)
+        soup = BeautifulSoup(page.text, "html.parser")
 
-    def run(self) -> httpx.Response:
-        return asyncio.run(self.__get_url(self.url))
+        for html_link_element in soup.find_all("a"):
+            link: str = html_link_element.get("href")
+
+            if not any(link.startswith(prefix) for prefix in HTTP_TRANSPORTS):
+                link = urljoin(self.base_url, link)
+
+            # if any(
+            #     link.startswith(f"{prefix}{self.parsed_base_url.hostname}")
+            #     for prefix in HTTP_TRANSPORTS
+            # ):
+            links.append(link)
+
+        return links
+
+    def run(self) -> list[str]:
+        return asyncio.run(self.__get_links(self.base_url))

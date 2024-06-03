@@ -13,7 +13,7 @@ INVALID_ARGS_EXIT_CODE = 2
 
 
 @mock.patch("sitemappy.main.Crawler")
-class SitemappyCLI(unittest.TestCase):
+class TestSitemappyCLI(unittest.TestCase):
     def setUp(self) -> None:
         self.runner = CliRunner()
 

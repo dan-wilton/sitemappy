@@ -13,6 +13,7 @@ dependencies = [
     "typer[all]>=0.12.3",
     "validators>=0.28.3",
     "httpx>=0.27.0",
+    "beautifulsoup4>=4.12.3",
 ]
 requires-python = ">=3.12"
 readme = "README.md"
@@ -37,6 +38,8 @@ lint = [
 ]
 test = [
     "parameterized>=0.9.0",
+    "coverage>=7.5.3",
+    "pytest>=8.2.1",
 ]
 
 [tool.mypy]
@@ -72,3 +75,9 @@ major_version_zero = true
 
 [tool.codespell]
 skip = 'tests/*'
+
+[tool.coverage.run]
+branch = true
+
+[tool.coverage.report]
+fail_under = 90

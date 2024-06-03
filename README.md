@@ -6,7 +6,7 @@ Sitemappy can be used as a command-line application, and also provides Python in
 
 ### Features
 
-- [ ] Print the URL for a given website when visited
+- [x] Print the URL for a given website when visited
 - [ ] Print the links for a given webpage
 - [ ] Visit the links for a given webpage
 - [ ] Limit the links to follow on a webpage to the same single subdomain

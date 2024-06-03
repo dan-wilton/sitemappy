@@ -3,5 +3,8 @@
   <component name="RuffConfigService">
     <option name="projectRuffExecutablePath" value="$PROJECT_DIR$/sitemappy/bin/ruff" />
     <option name="projectRuffLspExecutablePath" value="$PROJECT_DIR$/sitemappy/bin/ruff-lsp" />
+    <option name="runRuffOnSave" value="true" />
+    <option name="useRuffFormat" value="true" />
+    <option name="useRuffLsp" value="true" />
   </component>
 </project>

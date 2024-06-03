@@ -1,3 +1,7 @@
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
 [project]
 name = "sitemappy"
 version = "0.1.0"
@@ -5,14 +9,15 @@ description = "A Python library for crawling a website and returning a sitemap."
 authors = [
     {name = "Daniel Wilton", email = "daniel.wilton.dw@outlook.com"},
 ]
-dependencies = []
+dependencies = [
+    "typer[all]>=0.12.3",
+]
 requires-python = ">=3.12"
 readme = "README.md"
 license = {text = "MIT"}
 
-[build-system]
-requires = ["pdm-backend"]
-build-backend = "pdm.backend"
+[project.scripts]
+sitemappy = "sitemappy.main:app"
 
 [tool.pdm]
 distribution = true
@@ -59,3 +64,6 @@ version_scheme = "pep440"
 version_provider = "pep621"
 update_changelog_on_bump = true
 major_version_zero = true
+
+[tool.codespell]
+skip = 'tests/*'

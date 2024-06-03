@@ -1,0 +1,61 @@
+[project]
+name = "sitemappy"
+version = "0.1.0"
+description = "A Python library for crawling a website and returning a sitemap."
+authors = [
+    {name = "Daniel Wilton", email = "daniel.wilton.dw@outlook.com"},
+]
+dependencies = []
+requires-python = ">=3.12"
+readme = "README.md"
+license = {text = "MIT"}
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[tool.pdm]
+distribution = true
+plugins = [
+    "sync-pre-commit-lock"
+]
+
+[tool.pdm.dev-dependencies]
+lint = [
+    "commitizen>=3.27.0",
+    "mypy>=1.10.0",
+    "codespell>=2.3.0",
+    "ruff>=0.4.7",
+    "ruff-lsp>=0.0.53",
+]
+
+[tool.mypy]
+strict = true
+disallow_untyped_defs = true
+
+[tool.ruff.lint]
+# List of all rules can be found here https://docs.astral.sh/ruff/rules/
+select = [
+    "F",    # Pyflakes
+    "E",    # pycodestyle
+    "W",    # pycodestyle warnings
+    "C901", # McCabe complexity
+    "N",    # PEP8 Naming
+    "UP",   # pyupgrade, upgrades outdated syntax to support `requires-python` version
+    "S",    # flake8-bandit
+    "B",    # flake8-bugbear
+    "C4",   # flake8-comprehensions
+    "DTZ",  # flake8-datetimez
+    "PL",   # pylint
+    "RUF",  # Ruff-specific rules
+    "ARG",  # flake8-unused-arguments
+    "I",    # isort
+]
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+tag_format = "$version"
+version_scheme = "pep440"
+version_provider = "pep621"
+update_changelog_on_bump = true
+major_version_zero = true

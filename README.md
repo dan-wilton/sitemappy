@@ -76,11 +76,14 @@ sitemappy https://monzo.com/
 
 ```shell
 $ sitemappy --help
-usage: sitemappy [-h] ...
+usage: sitemappy [-h] BASE_URL
 
 Sitemappy is a CLI tool to crawl a website and create a sitemap.
-For more information about the tool go to https://github.com/dan-wilton/
+For more information about the tool go to https://github.com/dan-wilton/sitemappy/
 
-optional arguments:
+Arguments:
+  BASE_URL              a valid website URL to sitemap [required]
+
+Options:
   -h, --help            show this help message and exit
 ```

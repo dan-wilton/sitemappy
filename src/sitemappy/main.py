@@ -1,3 +1,7 @@
+"""
+Main entry point for the sitemappy CLI, powered by typer.
+"""
+
 import asyncio
 import json
 import os
@@ -20,10 +24,18 @@ MIN_CRAWL_DEPTH = 0
 DEFAULT_POLITENESS_DELAY_S = 0
 MIN_POLITENESS_DELAY_S = 0
 
+
 app = typer.Typer(rich_markup_mode="rich")
 
 
 def validate_base_url(url_string: str) -> str:
+    """
+    Validate that the url_string is a valid HTTP URL with top-level domain.
+    If the argument is invalid, raise a typer.BadParameter exception.
+
+    :param url_string: String to validate
+    :return: Valid url_string.
+    """
     url_validation = validators.url(url_string, consider_tld=True)
 
     if isinstance(url_validation, ValidationError) or not any(
@@ -35,6 +47,13 @@ def validate_base_url(url_string: str) -> str:
 
 
 def validate_workers(workers: int) -> int:
+    """
+    Validate that the number of workers arg meets the minimum requirement (1).
+    If the argument is invalid, raise a typer.BadParameter exception.
+
+    :param workers: Integer to validate
+    :return: Valid workers int.
+    """
     if workers < MIN_WORKERS:
         raise typer.BadParameter("Number of workers must be greater than 0! ❌")
 
@@ -42,19 +61,33 @@ def validate_workers(workers: int) -> int:
 
 
 def validate_crawl_depth(crawl_depth: int) -> int:
+    """
+    Validate that the crawl_depth arg meets the minimum requirement (0).
+    If the argument is invalid, raise a typer.BadParameter exception.
+
+    :param crawl_depth: Integer to validate
+    :return: Valid crawl_depth int.
+    """
     if crawl_depth < MIN_CRAWL_DEPTH:
         raise typer.BadParameter(f"Crawl depth must be at least {MIN_CRAWL_DEPTH}! ❌")
 
     return crawl_depth
 
 
-def validate_politeness_delay(validate_politeness_delay_s: int) -> int:
-    if validate_politeness_delay_s < MIN_POLITENESS_DELAY_S:
+def validate_politeness_delay(politeness_delay_s: int) -> int:
+    """
+    Validate that the politeness_delay arg meets the minimum requirement (0).
+    If the argument is invalid, raise a typer.BadParameter exception.
+
+    :param politeness_delay_s: Integer to validate
+    :return: Valid politeness_delay_s int.
+    """
+    if politeness_delay_s < MIN_POLITENESS_DELAY_S:
         raise typer.BadParameter(
             f"Politeness delay must be at least {MIN_CRAWL_DEPTH} seconds! ❌"
         )
 
-    return validate_politeness_delay_s
+    return politeness_delay_s
 
 
 @app.command(
@@ -83,9 +116,6 @@ def main(
         callback=validate_politeness_delay,
     ),
 ) -> None:
-    # Validate the URL input is a valid HTTP URL with TLD
-    validate_base_url(base_url)
-
     # The main bit ✨
     crawler = Crawler(
         base_url,
@@ -93,6 +123,8 @@ def main(
         crawl_depth=crawl_depth,
         politeness_delay=politeness_delay,
     )
+
+    print(f"[green]Crawling {base_url}...[/green]")
     results = asyncio.run(crawler.crawl())
 
     # Write the results and feedback to user
@@ -101,9 +133,12 @@ def main(
 
     total_number_of_links = 0
 
+    # Get total number of links found
     for links in results.values():
         total_number_of_links += len(links)
 
+    # Create a results table with number of pages
+    # crawled and links found
     table = Table(
         title=f"{base_url} 🔎",
     )
@@ -115,6 +150,7 @@ def main(
 
     table.add_row(f"{len(results.keys())}", f"{total_number_of_links}")
 
+    # Print the results and output file!
     print(
         "\n\n",
         table,

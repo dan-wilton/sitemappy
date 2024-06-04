@@ -11,6 +11,8 @@ from validators import ValidationError
 
 from sitemappy.crawler import Crawler
 
+DEFAULT_WORKERS = 10
+
 app = typer.Typer(rich_markup_mode="rich")
 
 
@@ -20,9 +22,16 @@ def validate_base_url(url_string: str) -> str:
     if isinstance(url_validation, ValidationError) or not any(
         [url_string.startswith("http://"), url_string.startswith("https://")]
     ):
-        raise Exception(f"Invalid URL provided: {url_string}")
+        raise typer.BadParameter("Invalid HTTP/HTTPS URL provided.")
 
     return url_string
+
+
+def validate_workers(workers: int) -> int:
+    if workers < 1:
+        raise typer.BadParameter("Number of workers must be greater than 0!")
+
+    return workers
 
 
 @app.command(
@@ -34,15 +43,16 @@ def main(
     base_url: Annotated[
         str,
         typer.Argument(
-            help="a valid website URL to sitemap",
+            help="a valid website URL to sitemap 🔎", callback=validate_base_url
         ),
     ],
+    workers: int = typer.Option(default=DEFAULT_WORKERS, callback=validate_workers),
 ) -> None:
     # Validate the URL input is a valid HTTP URL with TLD
     validate_base_url(base_url)
 
     # The main bit ✨
-    crawler = Crawler(base_url)
+    crawler = Crawler(base_url, number_of_workers=workers)
     results = asyncio.run(crawler.crawl())
 
     # Write the results and feedback to user

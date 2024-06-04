@@ -6,7 +6,7 @@ HTTP_TRANSPORTS = ["http://", "https://"]
 
 
 class Crawler:
-    def __init__(self, base_url: str, number_of_workers: int = 100):
+    def __init__(self, base_url: str, number_of_workers: int = 10):
         self.number_of_workers = number_of_workers
         self.scraper = AsyncScraper(base_url)
 

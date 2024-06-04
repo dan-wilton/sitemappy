@@ -1,4 +1,5 @@
 import asyncio
+import json
 import time
 
 from .link_scraper import AsyncScraper
@@ -18,12 +19,13 @@ class Crawler:
     A Crawler to spin up a set of workers running through Queue items until complete.
     """
 
-    def __init__(
+    def __init__(  # noqa: PLR0913 - Could move to Pydantic models in the future
         self,
         base_url: str,
         number_of_workers: int = DEFAULT_NUMBER_OF_WORKERS,
         crawl_depth: int = UNLIMITED_DEPTH,
         politeness_delay: int = POLITENESS_DELAY_DEFAULT_S,
+        enable_cmd_out: bool = False,
     ):
         """
         Initialise a new Crawler with asynchronous scraper.
@@ -42,6 +44,8 @@ class Crawler:
         self.number_of_workers = number_of_workers
         self.crawl_depth = crawl_depth
         self.politeness_delay = politeness_delay
+        self.enable_cmd_out = enable_cmd_out
+
         self.scraper = AsyncScraper(base_url)
 
         self._crawl_queue: asyncio.Queue[tuple[str, int]] = asyncio.Queue()
@@ -80,6 +84,7 @@ class Crawler:
 
             # Add to dictionary of results, using Set separately to avoid
             # race conditions across async tasks
+            self.cmd_out(json.dumps({page_to_crawl: links}))
             self._results[page_to_crawl] = links
             self._crawl_queue.task_done()
 
@@ -103,3 +108,13 @@ class Crawler:
             worker.cancel()
 
         return self._results
+
+    def cmd_out(self, msg: str) -> None:
+        """
+        If cmd output is enabled, print message.
+
+        :param msg: Message to print
+        :return:
+        """
+        if self.enable_cmd_out:
+            print(msg)

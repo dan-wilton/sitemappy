@@ -54,6 +54,7 @@ class BaseUrlArg(unittest.TestCase):
             number_of_workers=sitemappy.main.DEFAULT_WORKERS,
             crawl_depth=sitemappy.main.DEFAULT_CRAWL_DEPTH,
             politeness_delay=sitemappy.main.DEFAULT_POLITENESS_DELAY_S,
+            enable_cmd_out=False,
         )
         mock_crawler_instance.crawl.assert_called_once()
 
@@ -135,6 +136,7 @@ class WorkersOptionalArg(unittest.TestCase):
             number_of_workers=expected_number_of_workers,
             crawl_depth=sitemappy.main.DEFAULT_CRAWL_DEPTH,
             politeness_delay=sitemappy.main.DEFAULT_POLITENESS_DELAY_S,
+            enable_cmd_out=False,
         )
         mock_crawler_instance.crawl.assert_called_once()
 
@@ -215,6 +217,7 @@ class CrawlDepthOptionalArg(unittest.TestCase):
             number_of_workers=sitemappy.main.DEFAULT_WORKERS,
             crawl_depth=expected_crawl_depth,
             politeness_delay=sitemappy.main.DEFAULT_POLITENESS_DELAY_S,
+            enable_cmd_out=False,
         )
         mock_crawler_instance.crawl.assert_called_once()
 
@@ -295,6 +298,7 @@ class PolitenessDelayOptionalArg(unittest.TestCase):
             number_of_workers=sitemappy.main.DEFAULT_WORKERS,
             crawl_depth=sitemappy.main.DEFAULT_POLITENESS_DELAY_S,
             politeness_delay=expected_politeness_delay,
+            enable_cmd_out=False,
         )
         mock_crawler_instance.crawl.assert_called_once()
 

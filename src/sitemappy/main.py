@@ -115,6 +115,7 @@ def main(
         default=DEFAULT_POLITENESS_DELAY_S,
         callback=validate_politeness_delay,
     ),
+    enable_cmd_out: bool = False,
 ) -> None:
     # The main bit ✨
     crawler = Crawler(
@@ -122,9 +123,10 @@ def main(
         number_of_workers=workers,
         crawl_depth=crawl_depth,
         politeness_delay=politeness_delay,
+        enable_cmd_out=enable_cmd_out,
     )
 
-    print(f"[green]Crawling {base_url}...[/green]")
+    print(f"[green]Crawling {base_url} ...[/green]")
     results = asyncio.run(crawler.crawl())
 
     # Write the results and feedback to user

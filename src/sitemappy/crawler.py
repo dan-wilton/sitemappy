@@ -1,22 +1,29 @@
 import asyncio
+import time
 
 from .link_scraper import AsyncScraper
 
 HTTP_TRANSPORTS = ["http://", "https://"]
 
+POLITENESS_DELAY_DEFAULT_S = 0
+
 UNLIMITED_DEPTH = 0
 STARTING_DEPTH = 0
+
+DEFAULT_NUMBER_OF_WORKERS = 10
 
 
 class Crawler:
     def __init__(
         self,
         base_url: str,
-        number_of_workers: int = 10,
+        number_of_workers: int = DEFAULT_NUMBER_OF_WORKERS,
         crawl_depth: int = UNLIMITED_DEPTH,
+        politeness_delay: int = POLITENESS_DELAY_DEFAULT_S,
     ):
         self.number_of_workers = number_of_workers
         self.crawl_depth = crawl_depth
+        self.politeness_delay = politeness_delay
         self.scraper = AsyncScraper(base_url)
 
         self._crawl_queue: asyncio.Queue[tuple[str, int]] = asyncio.Queue()
@@ -35,6 +42,10 @@ class Crawler:
 
             self._crawled_urls.add(page_to_crawl)
             print(len(self._crawled_urls))
+
+            if self.politeness_delay > POLITENESS_DELAY_DEFAULT_S:
+                # Pause all threads for x seconds
+                time.sleep(self.politeness_delay)
 
             links = await self.scraper.get_links(page_to_crawl)
 

@@ -53,6 +53,7 @@ class BaseUrlArg(unittest.TestCase):
             valid_url,
             number_of_workers=sitemappy.main.DEFAULT_WORKERS,
             crawl_depth=sitemappy.main.DEFAULT_CRAWL_DEPTH,
+            politeness_delay=sitemappy.main.DEFAULT_POLITENESS_DELAY_S,
         )
         mock_crawler_instance.crawl.assert_called_once()
 
@@ -133,6 +134,7 @@ class WorkersOptionalArg(unittest.TestCase):
             valid_url,
             number_of_workers=expected_number_of_workers,
             crawl_depth=sitemappy.main.DEFAULT_CRAWL_DEPTH,
+            politeness_delay=sitemappy.main.DEFAULT_POLITENESS_DELAY_S,
         )
         mock_crawler_instance.crawl.assert_called_once()
 
@@ -212,6 +214,7 @@ class CrawlDepthOptionalArg(unittest.TestCase):
             valid_url,
             number_of_workers=sitemappy.main.DEFAULT_WORKERS,
             crawl_depth=expected_crawl_depth,
+            politeness_delay=sitemappy.main.DEFAULT_POLITENESS_DELAY_S,
         )
         mock_crawler_instance.crawl.assert_called_once()
 
@@ -253,6 +256,86 @@ class CrawlDepthOptionalArg(unittest.TestCase):
         # Act
         cli_output = self.runner.invoke(
             app, f"{valid_url} --crawl-depth {invalid_crawl_depth}"
+        )
+
+        # Assert
+        self.assertEqual(INVALID_ARGS_EXIT_CODE, cli_output.exit_code)
+
+        mock_crawler.assert_not_called()
+        mock_crawler_instance.crawl.assert_not_called()
+
+
+@mock.patch("sitemappy.main.Crawler")
+class PolitenessDelayOptionalArg(unittest.TestCase):
+    def setUp(self) -> None:
+        self.runner = CliRunner()
+
+    def test_valid_custom_politeness_delay(
+        self,
+        mock_crawler: Mock,
+    ) -> None:
+        # Arrange
+        valid_url: str = "https://monzo.com"
+        expected_politeness_delay = 99
+
+        mock_crawler_instance = Mock(Crawler)
+        mock_crawler.return_value = mock_crawler_instance
+        mock_crawler_instance.crawl.return_value = {valid_url: []}
+
+        # Act
+        cli_output = self.runner.invoke(
+            app, f"{valid_url} --politeness-delay {expected_politeness_delay}"
+        )
+
+        # Assert
+        self.assertEqual(SUCCESS_EXIT_CODE, cli_output.exit_code)
+
+        mock_crawler.assert_called_once_with(
+            valid_url,
+            number_of_workers=sitemappy.main.DEFAULT_WORKERS,
+            crawl_depth=sitemappy.main.DEFAULT_POLITENESS_DELAY_S,
+            politeness_delay=expected_politeness_delay,
+        )
+        mock_crawler_instance.crawl.assert_called_once()
+
+    def test_invalid_politeness_delay_arg_type(
+        self,
+        mock_crawler: Mock,
+    ) -> None:
+        # Arrange
+        valid_url: str = "https://monzo.com"
+        invalid_politeness_delay = "ten"
+
+        mock_crawler_instance = Mock(Crawler)
+        mock_crawler.return_value = mock_crawler_instance
+        mock_crawler_instance.crawl.return_value = {valid_url: []}
+
+        # Act
+        cli_output = self.runner.invoke(
+            app, f"{valid_url} --politeness-delay {invalid_politeness_delay}"
+        )
+
+        # Assert
+        self.assertEqual(INVALID_ARGS_EXIT_CODE, cli_output.exit_code)
+
+        mock_crawler.assert_not_called()
+        mock_crawler_instance.crawl.assert_not_called()
+
+    def test_invalid_crawl_depth_arg_less_than_zero(
+        self,
+        mock_crawler: Mock,
+    ) -> None:
+        # Arrange
+        valid_url: str = "https://monzo.com"
+        invalid_politeness_delay = -1
+
+        mock_crawler_instance = Mock(Crawler)
+        mock_crawler.return_value = mock_crawler_instance
+        mock_crawler_instance.crawl.return_value = {valid_url: []}
+
+        # Act
+        cli_output = self.runner.invoke(
+            app, f"{valid_url} --politeness-delay {invalid_politeness_delay}"
         )
 
         # Assert

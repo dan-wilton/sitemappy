@@ -21,7 +21,7 @@ Sitemappy is a command-line application, and also provides Python interfaces for
 - [ ] "Spider Trap" resilience
 - [ ] Introduce `multiprocessing`
 - [ ] Distributed multiprocessing
-- [ ] Publish to PyPi 🚀
+- [x] Publish to PyPi 🚀
 
 ## 🚀 Usage
 

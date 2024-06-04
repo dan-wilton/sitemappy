@@ -1,0 +1,16 @@
+## 0.2.0 (2024-06-04)
+
+### Feat
+
+- print to cmd optional CLI arg
+- **crawler.py**: configurable crawling politeness
+- **crawler.py**: crawl depth flag for depth of pages to follow
+- **main.py**: argument for number of async workers
+- concurrent workers and asyncio queue, results output to json file
+- **Crawler**: relative url and anchor link handling
+- async get requested url response and validation
+- output url argument to console
+
+### Refactor
+
+- **main.py**: cli tool help text formatting

@@ -1,3 +1,13 @@
+## 1.0.0 (2024-06-04)
+
+### BREAKING CHANGE
+
+- sitemappy not available in pypi, renamed interface to sitemappy-cli
+
+### Fix
+
+- rename sitemappy to sitemappy-cli for publishing
+
 ## 0.2.0 (2024-06-04)
 
 ### Feat

@@ -3,7 +3,7 @@ requires = ["pdm-backend"]
 build-backend = "pdm.backend"
 
 [project]
-name = "sitemappy"
+name = "sitemappy-cli"
 version = "0.2.0"
 description = "A Python library for crawling a website and returning a sitemap."
 authors = [
@@ -21,6 +21,7 @@ license = {text = "MIT"}
 
 [project.scripts]
 sitemappy = "sitemappy.main:app"
+sitemappy-cli = "sitemappy.main:app"
 
 [tool.pdm]
 distribution = true

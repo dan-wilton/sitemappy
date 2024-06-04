@@ -23,6 +23,40 @@ Sitemappy can be used as a command-line application, and also provides Python in
 - [ ] Distributed multiprocessing
 - [ ] Publish to PyPi 🚀
 
+## 🚀 Usage
+
+Generate a sitemap (`./results.json`):
+
+```shell
+sitemappy https://monzo.com/
+```
+
+### Help
+
+```shell
+$ sitemappy --help
+usage: sitemappy [-h] BASE_URL
+
+Sitemappy is a CLI tool to crawl a website and create a sitemap.
+For more information about the tool go to https://github.com/dan-wilton/sitemappy/
+
+Arguments:
+  BASE_URL              a valid website URL to sitemap [required]
+
+Options:
+  --workers           INTEGER     Number of workers to asynchronously 
+                                  make web requests [default: 10]
+  
+  --crawl-depth       INTEGER     Depth of links from base URL to follow
+                                  [default: 0 - unlimited]
+  
+  --politeness-delay  INTEGER     Delay between each request to the website
+                                  [default: 0 - none]
+  
+  --enable-cmd-out                Print output to cmd
+  
+  --help                          show this help message and exit
+```
 
 
 ## 🎒 Requirements 
@@ -30,12 +64,23 @@ Sitemappy can be used as a command-line application, and also provides Python in
 [Python](https://www.python.org/downloads/) `3.12+`
 
 
+### Development 
+
+[PDM](https://pdm-project.org/en/latest/)
+
+
 ## 💻 Installation
 
 To use the sitemappy CLI:
 
-```bash
+```shell
 pip install --user -U sitemappy
+```
+
+### Local Development / Contributing
+
+```shell
+pdm install
 ```
 
 ### Python Library
@@ -62,33 +107,10 @@ poetry add sitemappy
 
 ### macOS
 
+> **_NOTE:_** This is not yet enabled 😢
+
 via [homebrew](#macos):
 
 ```bash
 brew install sitemappy
-```
-
-
-## 🚀 Usage
-
-Generate a sitemap:
-
-```shell
-sitemappy https://monzo.com/
-```
-
-### Help
-
-```shell
-$ sitemappy --help
-usage: sitemappy [-h] BASE_URL
-
-Sitemappy is a CLI tool to crawl a website and create a sitemap.
-For more information about the tool go to https://github.com/dan-wilton/sitemappy/
-
-Arguments:
-  BASE_URL              a valid website URL to sitemap [required]
-
-Options:
-  -h, --help            show this help message and exit
 ```

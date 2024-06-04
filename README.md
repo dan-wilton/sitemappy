@@ -22,6 +22,8 @@ Sitemappy is a command-line application, and also provides Python interfaces for
 - [ ] Introduce `multiprocessing`
 - [ ] Distributed multiprocessing
 - [x] Publish to PyPi 🚀
+- [x] GitHub Workflows (deploy)
+- [ ] GitHub Workflows (linting, unit testing, dev deployments)
 
 ## 🚀 Usage
 

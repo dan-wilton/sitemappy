@@ -7,10 +7,17 @@ Sitemappy can be used as a command-line application, and also provides Python in
 ### Features
 
 - [x] Print the URL for a given website when visited
-- [ ] Print the links for a given webpage
-- [ ] Visit the links for a given webpage
-- [ ] Limit the links to follow on a webpage to the same single subdomain
-- [ ] Introduce concurrency (`asyncio`, `multithreading`, `multiprocessing`)
+- [x] Print the links for a given webpage
+- [x] Visit the links for a given webpage
+- [x] Limit the links to follow on a webpage to the same single subdomain
+- [x] Introduce concurrency (`asyncio`, `multithreading`, `multiprocessing`)
+- [x] Output crawling results to file by default (results too long for console)
+- [ ] Modify number of async crawler workers
+- [ ] HTTP error response handling
+- [ ] Follow HTTP redirect responses
+- [ ] Enable & modify crawling politeness
+- [ ] Specify crawling depth
+
 
 
 ## 🎒 Requirements 

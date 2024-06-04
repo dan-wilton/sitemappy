@@ -1,94 +1,69 @@
 import unittest
-from http import HTTPStatus
+from unittest import mock
+from unittest.mock import AsyncMock, call
 
-import httpx
 from parameterized import parameterized
 
 from sitemappy.crawler import Crawler
 
 
-class TestCrawler(unittest.TestCase):
-    def __generate_html_page_of_links(self, links: list[str]) -> str:
-        html_links = [f"<a href={link}>{index}</a>" for index, link in enumerate(links)]
-        return f"<html>{html_links}</html>"
-
-    def test_successful_get_url(self) -> None:
-        # Arrange
-        expected_response = [
-            "https://monzo.com/careers",
-            "https://monzo.com/about",
-        ]
-        client = httpx.AsyncClient(
-            transport=httpx.MockTransport(
-                lambda _: httpx.Response(
-                    HTTPStatus.OK,
-                    content=self.__generate_html_page_of_links(expected_response),
-                )
-            )
-        )
-
-        class_under_test = Crawler("https://monzo.com", client=client)
-
-        # Act
-        response = class_under_test.run()
-
-        # Assert
-        self.assertEqual(expected_response, response)
-
-    @parameterized.expand(
+@mock.patch("sitemappy.crawler.AsyncScraper.get_links", new_callable=AsyncMock)
+class TestCrawler(unittest.IsolatedAsyncioTestCase):
+    @parameterized.expand(  # type: ignore[misc]
         [
-            (
-                "https://monzo.com",
-                [
-                    "https://monzo.com#careers",
-                    "https://monzo.com/business-banking",
-                ],
-                ["#careers", "/business-banking"],
-            ),
-            (
-                "https://www.monzo.com/",
-                [
-                    "https://www.monzo.com/#careers",
-                    "https://www.monzo.com/business-banking",
-                ],
-                ["#careers", "/business-banking"],
-            ),
+            # Base URL, Links to Return
+            ("https://monzo.com", []),
+            ("https://monzo.com", ["+442038720620"]),
+            ("https://monzo.com", ["mailto:careers@monzo.com"]),
+            ("https://monzo.com", ["https://monzo.commalformedurl"]),
+            ("https://monzo.com", ["+442038720620", "mailto:careers@monzo.com"]),
         ]
-    )  # type: ignore[misc]
-    def test_successful_get_relative_url(
-        self, base_url: str, expected_urls: list[str], relative_urls: list[str]
+    )
+    async def test_base_url_crawl__links(
+        self,
+        mock_scraper_get_links: AsyncMock,
+        base_url: str,
+        links_to_return: list[str],
     ) -> None:
         # Arrange
-        client = httpx.AsyncClient(
-            transport=httpx.MockTransport(
-                lambda _: httpx.Response(
-                    HTTPStatus.OK,
-                    content=self.__generate_html_page_of_links(relative_urls),
-                )
-            )
-        )
+        expected = {
+            base_url: links_to_return,
+        }
+        mock_scraper_get_links.return_value = links_to_return
 
-        class_under_test = Crawler(base_url, client=client)
+        crawler = Crawler(base_url)
 
         # Act
-        response = class_under_test.run()
+        results = await crawler.crawl()
 
         # Assert
-        self.assertEqual(expected_urls, response)
+        mock_scraper_get_links.assert_called_once()
+        self.assertDictEqual(expected, results)
 
-    def test_unsuccessful_get_url(self) -> None:
+    async def test_base_url_with_links(
+        self,
+        mock_scraper_get_links: AsyncMock,
+    ) -> None:
         # Arrange
-        expected_number_of_links = 0
-        client = httpx.AsyncClient(
-            transport=httpx.MockTransport(
-                lambda _: httpx.Response(HTTPStatus.INTERNAL_SERVER_ERROR)
-            )
-        )
+        base_url = "https://monzo.com"
+        second_crawl_url = f"{base_url}/test"
 
-        class_under_test = Crawler("https://monzo.com", client=client)
+        base_url_links = [second_crawl_url, "mailto:careers@monzo.com"]
+        subdomain_links = ["+442038720620"]
+
+        expected = {
+            base_url: base_url_links,
+            second_crawl_url: subdomain_links,
+        }
+
+        mock_scraper_get_links.side_effect = [base_url_links, subdomain_links]
+        crawler = Crawler(base_url)
 
         # Act
-        response = class_under_test.run()
+        results = await crawler.crawl()
 
         # Assert
-        self.assertEqual(expected_number_of_links, len(response))
+        mock_scraper_get_links.assert_has_calls(
+            [call(base_url), call(second_crawl_url)]
+        )
+        self.assertDictEqual(expected, results)

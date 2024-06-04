@@ -1,40 +1,49 @@
 import asyncio
-from urllib.parse import urljoin, urlparse
 
-import httpx
-from bs4 import BeautifulSoup
+from .link_scraper import AsyncScraper
 
 HTTP_TRANSPORTS = ["http://", "https://"]
 
 
 class Crawler:
-    def __init__(
-        self,
-        url: str,
-        client: httpx.AsyncClient | None = None,
-    ):
-        self.base_url = url
-        self.parsed_base_url = urlparse(url)
-        self.client = client if client else httpx.AsyncClient()
+    def __init__(self, base_url: str, number_of_workers: int = 100):
+        self.number_of_workers = number_of_workers
+        self.scraper = AsyncScraper(base_url)
 
-    async def __get_links(self, url: str) -> list[str]:
-        links = []
-        page = await self.client.get(url=url)
-        soup = BeautifulSoup(page.text, "html.parser")
+        self._crawl_queue: asyncio.Queue[str] = asyncio.Queue()
+        self._results: dict[str, list[str]] = {}
+        self._crawled_urls: set[str] = set()
 
-        for html_link_element in soup.find_all("a"):
-            link: str = html_link_element.get("href")
+    async def _worker(self) -> None:
+        while True:
+            page_to_crawl: str = await self._crawl_queue.get()
 
-            if not any(link.startswith(prefix) for prefix in HTTP_TRANSPORTS):
-                link = urljoin(self.base_url, link)
+            if page_to_crawl in self._crawled_urls:
+                self._crawl_queue.task_done()
+                continue
 
-            # if any(
-            #     link.startswith(f"{prefix}{self.parsed_base_url.hostname}")
-            #     for prefix in HTTP_TRANSPORTS
-            # ):
-            links.append(link)
+            self._crawled_urls.add(page_to_crawl)
+            print(len(self._crawled_urls))
 
-        return links
+            links = await self.scraper.get_links(page_to_crawl)
 
-    def run(self) -> list[str]:
-        return asyncio.run(self.__get_links(self.base_url))
+            for link in links:
+                if self.scraper.is_in_same_subdomain(link):
+                    await self._crawl_queue.put(link)
+
+            self._results[page_to_crawl] = links
+            self._crawl_queue.task_done()
+
+    async def crawl(self) -> dict[str, list[str]]:
+        self._crawl_queue.put_nowait(self.scraper.base_url)
+
+        workers = [
+            asyncio.create_task(self._worker()) for _ in range(self.number_of_workers)
+        ]
+
+        await self._crawl_queue.join()
+
+        for worker in workers:
+            worker.cancel()
+
+        return self._results

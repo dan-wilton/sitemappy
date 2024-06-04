@@ -13,10 +13,11 @@ Sitemappy can be used as a command-line application, and also provides Python in
 - [x] Introduce concurrency (`asyncio`, `multithreading`, `multiprocessing`)
 - [x] Output crawling results to file by default (results too long for console)
 - [x] Modify number of async crawler workers
+- [x] Specify crawling depth
+- [ ] Enable & modify crawling politeness
 - [ ] HTTP error response handling
 - [ ] Follow HTTP redirect responses
-- [ ] Enable & modify crawling politeness
-- [ ] Specify crawling depth
+- [ ] Crawl a website's `robots.txt`
 - [ ] Publish to PyPi 🚀
 
 

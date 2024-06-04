@@ -12,6 +12,10 @@ from validators import ValidationError
 from sitemappy.crawler import Crawler
 
 DEFAULT_WORKERS = 10
+MIN_WORKERS = 1
+
+DEFAULT_CRAWL_DEPTH = 0
+MIN_CRAWL_DEPTH = 0
 
 app = typer.Typer(rich_markup_mode="rich")
 
@@ -28,10 +32,17 @@ def validate_base_url(url_string: str) -> str:
 
 
 def validate_workers(workers: int) -> int:
-    if workers < 1:
+    if workers < MIN_WORKERS:
         raise typer.BadParameter("Number of workers must be greater than 0!")
 
     return workers
+
+
+def validate_crawl_depth(crawl_depth: int) -> int:
+    if crawl_depth < MIN_CRAWL_DEPTH:
+        raise typer.BadParameter(f"Crawl depth must be at least {MIN_CRAWL_DEPTH}!")
+
+    return crawl_depth
 
 
 @app.command(
@@ -43,16 +54,24 @@ def main(
     base_url: Annotated[
         str,
         typer.Argument(
-            help="a valid website URL to sitemap 🔎", callback=validate_base_url
+            help="a valid website URL to sitemap 🔎",
+            callback=validate_base_url,
         ),
     ],
-    workers: int = typer.Option(default=DEFAULT_WORKERS, callback=validate_workers),
+    workers: int = typer.Option(
+        default=DEFAULT_WORKERS,
+        callback=validate_workers,
+    ),
+    crawl_depth: int = typer.Option(
+        default=DEFAULT_CRAWL_DEPTH,
+        callback=validate_crawl_depth,
+    ),
 ) -> None:
     # Validate the URL input is a valid HTTP URL with TLD
     validate_base_url(base_url)
 
     # The main bit ✨
-    crawler = Crawler(base_url, number_of_workers=workers)
+    crawler = Crawler(base_url, number_of_workers=workers, crawl_depth=crawl_depth)
     results = asyncio.run(crawler.crawl())
 
     # Write the results and feedback to user

@@ -5,9 +5,16 @@ on:
     tags:
       - "*" # Will trigger for every tag, alternative: 'v*'
 
+permissions:
+  # This permission is needed for private repositories.
+  contents: read
+  # This permission is mandatory for trusted publishing to PyPi.
+  id-token: write
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: release
     steps:
       - uses: actions/checkout@v3
         with:
@@ -22,8 +29,5 @@ jobs:
           pdm install
 
       - name: Build and publish
-        env:
-          PYPI_USERNAME: __token__
-          PYPI_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
         run: |
           pdm publish

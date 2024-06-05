@@ -17,6 +17,7 @@ Sitemappy is a command-line application, and also provides Python interfaces for
 - [x] Crawling politeness argument
 - [ ] Follow HTTP redirect responses
 - [ ] HTTP error response handling
+- [ ] Add DEBUG, INFO and ERROR logging
 - [ ] Adhere to a website's `robots.txt`
 - [ ] "Spider Trap" resilience
 - [ ] Introduce `multiprocessing`

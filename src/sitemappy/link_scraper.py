@@ -17,7 +17,7 @@ class AsyncScraper:
         client: httpx.AsyncClient | None = None,
     ):
         """
-        Initialise a new asynchrous link scaper.
+        Initialise a new asynchronous link scaper.
 
         :param base_url: Base URL of the site to crawl
         :param client: httpx.AsyncClient for making requests

@@ -4,7 +4,7 @@ build-backend = "pdm.backend"
 
 [project]
 name = "sitemappy-cli"
-version = "1.0.1"
+version = "1.0.2"
 description = "A Python library for crawling a website and returning a sitemap."
 authors = [
     {name = "Daniel Wilton", email = "daniel.wilton.dw@outlook.com"},

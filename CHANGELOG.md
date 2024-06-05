@@ -1,3 +1,9 @@
+## 1.0.2 (2024-06-05)
+
+### Fix
+
+- **release-main.yml**: fix setup-pdm action for releasing to PyPi
+
 ## 1.0.1 (2024-06-05)
 
 ### Fix

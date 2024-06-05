@@ -1,3 +1,9 @@
+## 1.0.3 (2024-06-05)
+
+### Fix
+
+- **release-main.yml**: fix release permissions, add GitHub OIDC with PyPi
+
 ## 1.0.2 (2024-06-05)
 
 ### Fix

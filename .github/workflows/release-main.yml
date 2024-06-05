@@ -14,7 +14,7 @@ jobs:
           fetch-depth: 0
 
       - name: Set up PDM
-        uses: actions/setup-pdm@v4
+        uses: pdm-project/setup-pdm@v4
 
       - name: Install dependencies
         run: |

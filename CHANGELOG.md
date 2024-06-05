@@ -1,3 +1,9 @@
+## 1.0.4 (2024-06-05)
+
+### Fix
+
+- support external mypy usage with py.typed
+
 ## 1.0.3 (2024-06-05)
 
 ### Fix

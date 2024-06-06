@@ -86,6 +86,12 @@ pip install --user -U sitemappy-cli
 pdm install
 ```
 
+Run the tests with:
+
+```shell
+pytest -v
+```
+
 ### Python Library
 
 Use sitemappy in your project with one of the following:

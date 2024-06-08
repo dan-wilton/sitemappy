@@ -1,3 +1,9 @@
+## 1.0.5 (2024-06-08)
+
+### Fix
+
+- **__main__.py**: user site installation from pypi
+
 ## 1.0.4 (2024-06-05)
 
 ### Fix
